@@ -1,8 +1,11 @@
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -16,27 +19,67 @@ public class Main extends Application {
         final double WIDTH  = 500;
         final double HEIGHT = 300;
 
+        // Algorithm selection box
+        ObservableList<String> algorithms = FXCollections.observableArrayList("Caesar", "Playfair", "DES");
+        ChoiceBox<String> algorithmChoiceBox = new ChoiceBox<>(algorithms);
+        algorithmChoiceBox.getSelectionModel().select(0);
 
         //TextFields for message input and encryption output
-        TextField msgText = new TextField("Enter Message Here!");
-        msgText.setAlignment(Pos.TOP_LEFT);
-        msgText.setPrefHeight(HEIGHT);
-        msgText.setPrefWidth(WIDTH);
+        TextField msgTextBox = new TextField("Enter Message Here!");
+        msgTextBox.setAlignment(Pos.TOP_LEFT);
+        msgTextBox.setPrefHeight(HEIGHT);
+        msgTextBox.setPrefWidth(WIDTH);
         
-        TextField cipherText = new TextField("Cipher Here!");
-        cipherText.setAlignment(Pos.TOP_LEFT);
-        cipherText.setPrefHeight(HEIGHT);
-        cipherText.setPrefWidth(WIDTH);
+        TextField cipherTextBox = new TextField("Cipher Here!");
+        cipherTextBox.setAlignment(Pos.TOP_LEFT);
+        cipherTextBox.setPrefHeight(HEIGHT);
+        cipherTextBox.setPrefWidth(WIDTH);
 
+        // Controls items for key textfield and clear button
+        // Keyword Textbox
+        TextField keyValueTF = new TextField("0");
 
-        //Controls items for key textfield and clear button
-        TextField keyValue = new TextField("0");
-
+        // Clear Button
         Button clearButton = new Button("Clear!");
         clearButton.setOnAction(event -> {
-            cipherText.clear();
-            msgText.clear();
+            cipherTextBox.clear();
+            msgTextBox.clear();
         });
+
+        // Encrypt and Decrypt buttons
+        Button encryptButton = new Button("Encrypt");
+        encryptButton.setOnAction(event -> {
+
+            String s =algorithmChoiceBox.getValue() ;
+
+            if (s.equals("DES")){
+                DES des = new DES(keyValueTF.getText());
+                cipherTextBox.setText(des.encrypt(msgTextBox.getText()));
+            }else if (s.equals("Caesar")){
+                cipherTextBox.setText(CaesarCipher.encrypt(msgTextBox.getText(), Integer.parseInt(keyValueTF.getText())));
+            }else{
+                Playfair playfair = new Playfair();
+                playfair.createMatrix(keyValueTF.getText());
+                cipherTextBox.setText(playfair.encrypt(msgTextBox.getText()));
+            }
+        });
+        Button decryptButton = new Button("Decrypt");
+        decryptButton.setOnAction(event -> {
+
+            String s =algorithmChoiceBox.getValue() ;
+
+            if (s.equals("DES")){
+                DES des = new DES(keyValueTF.getText());
+                cipherTextBox.setText(des.decrypt(msgTextBox.getText()));
+            }else if (s.equals("Caesar")){
+                cipherTextBox.setText(CaesarCipher.decrypt(msgTextBox.getText(), Integer.parseInt(keyValueTF.getText())));
+            }else{
+                Playfair playfair = new Playfair();
+                playfair.createMatrix(keyValueTF.getText());
+                cipherTextBox.setText(playfair.decrypt(msgTextBox.getText()));
+            }
+        });
+
 
         //Assembling UI control elements in a central vBox
         VBox controlsPane = new VBox(20);
@@ -44,7 +87,7 @@ public class Main extends Application {
         controlsPane.setAlignment(Pos.CENTER);
         controlsPane.setFillWidth(true);
         controlsPane.setPrefWidth(WIDTH/4);
-        controlsPane.getChildren().addAll(keyValue, clearButton);
+        controlsPane.getChildren().addAll(keyValueTF, clearButton, encryptButton, decryptButton, algorithmChoiceBox);
 
         //Assembling text fields with controls
         FlowPane pane = new FlowPane();
@@ -52,29 +95,24 @@ public class Main extends Application {
         pane.setHgap(8);
         pane.setVgap(8);
 
-        //Encrypt text while typing
-        msgText.setOnMousePressed(event -> {
-            msgText.clear();
-            cipherText.clear();
-        });
-
+        /*//Encrypt text while typing
         msgText.setOnKeyTyped(event -> {
-            cipherText.appendText(CaesarCipher.encrypt(event.getCharacter(), Integer.parseInt(keyValue.getText())));
+            cipherTextBox.appendText(CaesarCipher.encrypt(event.getCharacter(), Integer.parseInt(keyValueTF.getText())));
         });
 
 
         //Decrypt text while typing
-        cipherText.setOnKeyTyped(event -> {
-            msgText.appendText(CaesarCipher.decrypt(event.getCharacter(), Integer.parseInt(keyValue.getText())));
+        cipherTextBox.setOnKeyTyped(event ->
+            msgText.appendText(CaesarCipher.decrypt(event.getCharacter(), Integer.parseInt(keyValueTF.getText())))
+        );
+*/
+
+        // Change encryption algorithm according to choicebox value
+        algorithmChoiceBox.getSelectionModel().selectedItemProperty().addListener( ov ->{
+
         });
 
-        cipherText.setOnMousePressed(event -> {
-            msgText.clear();
-            cipherText.clear();
-        });
-
-
-        pane.getChildren().addAll(msgText, controlsPane, cipherText);
+        pane.getChildren().addAll(msgTextBox, controlsPane, cipherTextBox);
 
         Scene scene = new Scene(pane, 1250, 400);
 
@@ -83,4 +121,5 @@ public class Main extends Application {
         primaryStage.show();
 
     }
+
 }
