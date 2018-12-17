@@ -1,8 +1,8 @@
-public class CaesarCipher {
+class CaesarCipher {
 
 
 
-    public static String encrypt(String plaintext, int shift){
+    static String encrypt(String plaintext, int shift){
 
         String s = "";
 
@@ -21,7 +21,7 @@ public class CaesarCipher {
         return s;
     }
 
-    public static String decrypt(String plaintext, int shift){
+    static String decrypt(String plaintext, int shift){
 
         String s = "";
 

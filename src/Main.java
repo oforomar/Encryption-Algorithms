@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.math.BigInteger;
 
 public class Main extends Application {
 
@@ -20,7 +21,7 @@ public class Main extends Application {
         final double HEIGHT = 300;
 
         // Algorithm selection box
-        ObservableList<String> algorithms = FXCollections.observableArrayList("Caesar", "Playfair", "DES");
+        ObservableList<String> algorithms = FXCollections.observableArrayList("Caesar", "Playfair", "DES", "RC4", "RSA");
         ChoiceBox<String> algorithmChoiceBox = new ChoiceBox<>(algorithms);
         algorithmChoiceBox.getSelectionModel().select(0);
 
@@ -46,6 +47,8 @@ public class Main extends Application {
             msgTextBox.clear();
         });
 
+        RSA rsa = new RSA();
+
         // Encrypt and Decrypt buttons
         Button encryptButton = new Button("Encrypt");
         encryptButton.setOnAction(event -> {
@@ -57,10 +60,16 @@ public class Main extends Application {
                 cipherTextBox.setText(des.encrypt(msgTextBox.getText()));
             }else if (s.equals("Caesar")){
                 cipherTextBox.setText(CaesarCipher.encrypt(msgTextBox.getText(), Integer.parseInt(keyValueTF.getText())));
-            }else{
+            }else if (s.equals("Playfair")){
                 Playfair playfair = new Playfair();
                 playfair.createMatrix(keyValueTF.getText());
                 cipherTextBox.setText(playfair.encrypt(msgTextBox.getText()));
+            }else if (s.equals("RC4")){
+                RC4 rC4 = new RC4(keyValueTF.getText());
+                cipherTextBox.setText(rC4.encrypt(msgTextBox.getText()));
+            }else if (s.equals("RSA")){
+                //RSA rsa = new RSA();
+                cipherTextBox.setText(rsa.encrypt(new BigInteger(msgTextBox.getText())));
             }
         });
         Button decryptButton = new Button("Decrypt");
@@ -73,13 +82,18 @@ public class Main extends Application {
                 cipherTextBox.setText(des.decrypt(msgTextBox.getText()));
             }else if (s.equals("Caesar")){
                 cipherTextBox.setText(CaesarCipher.decrypt(msgTextBox.getText(), Integer.parseInt(keyValueTF.getText())));
-            }else{
+            }else if (s.equals("Playfair")){
                 Playfair playfair = new Playfair();
                 playfair.createMatrix(keyValueTF.getText());
                 cipherTextBox.setText(playfair.decrypt(msgTextBox.getText()));
+            }else if (s.equals("RC4")){
+                RC4 rC4 = new RC4(keyValueTF.getText());
+                cipherTextBox.setText(rC4.decrypt(msgTextBox.getText()));
+            }else if (s.equals("RSA")){
+                //RSA rsa = new RSA();
+                cipherTextBox.setText(rsa.decrypt(new BigInteger(msgTextBox.getText())));
             }
         });
-
 
         //Assembling UI control elements in a central vBox
         VBox controlsPane = new VBox(20);
@@ -104,13 +118,7 @@ public class Main extends Application {
         //Decrypt text while typing
         cipherTextBox.setOnKeyTyped(event ->
             msgText.appendText(CaesarCipher.decrypt(event.getCharacter(), Integer.parseInt(keyValueTF.getText())))
-        );
-*/
-
-        // Change encryption algorithm according to choicebox value
-        algorithmChoiceBox.getSelectionModel().selectedItemProperty().addListener( ov ->{
-
-        });
+        );*/
 
         pane.getChildren().addAll(msgTextBox, controlsPane, cipherTextBox);
 
