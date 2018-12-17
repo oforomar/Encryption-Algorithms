@@ -1,7 +1,7 @@
 import java.util.LinkedHashSet;
 import java.util.Set;
-class Playfair {
 
+class Playfair {
     private String key;
     private char[][] matrix;
 

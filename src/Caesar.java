@@ -1,6 +1,4 @@
-class CaesarCipher {
-
-
+class Caesar{
 
     static String encrypt(String plaintext, int shift){
 

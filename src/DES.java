@@ -40,6 +40,12 @@ class DES {
     private ArrayList<StringBuilder> keyList;
 
     DES(String key){
+        if (key.length() >= 64)
+            key = key.substring(0, 64);
+        else
+            while (key.length() < 64)
+                key += " ";
+
         StringBuilder keySB = new StringBuilder();
 
         // Convert characters to bits
@@ -51,10 +57,7 @@ class DES {
             keySB.append(sTemp);
         }
 
-        while (keySB.length() != 64)
-            keySB.append("0");
-
-        keySB = new StringBuilder(keySB.substring(0, 64));
+        //keySB = new StringBuilder(keySB.substring(0, 64));
         keySB = initialKeyPermute(keySB);
 
         ArrayList<StringBuilder> keyList = new ArrayList<>();
@@ -270,9 +273,9 @@ class DES {
     }
 
     String encrypt(String plaintext){
+        // Check if input less than 64-bit blocks
         while ((plaintext.length() % 64) != 0)
             plaintext += ' ';
-
         StringBuilder stringArray = new StringBuilder();
 
         // Convert characters to bits
@@ -282,7 +285,6 @@ class DES {
             while (sTemp.length() < 8)
                 sTemp  = "0" + sTemp;
             stringArray.append(sTemp);
-
         }
 
         StringBuilder currentBlock;
@@ -331,14 +333,14 @@ class DES {
         }
 
         // Convert bits back to characters
-        String c = cipher.toString() ;
-        StringBuilder n = new StringBuilder();
+        String c = cipher.toString();
+        StringBuilder result = new StringBuilder();
         int cipherInteger ;
         for (int i = 0; i <c.length(); i+=8) {
             cipherInteger = Integer.parseInt( c.substring(i , i+8), 2 );
-            n.append((char)cipherInteger);
+            result.append((char) cipherInteger);
         }
-        return n.toString();
+        return result.toString();
     }
 
     String decrypt(String plaintext){

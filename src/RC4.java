@@ -1,6 +1,5 @@
 class RC4 {
     private int[] S = new int[256];
-
     // Key Generation
     RC4(String keyString) {
 
@@ -54,12 +53,10 @@ class RC4 {
             result[counter] = plaintext[counter] ^ k;
             ciphertext[counter] = (char) result[counter];
         }
-
         return new String(ciphertext);
     }
 
     String decrypt(String plaintextString){
         return encrypt(plaintextString);
     }
-
 }

@@ -59,7 +59,7 @@ public class Main extends Application {
                 DES des = new DES(keyValueTF.getText());
                 cipherTextBox.setText(des.encrypt(msgTextBox.getText()));
             }else if (s.equals("Caesar")){
-                cipherTextBox.setText(CaesarCipher.encrypt(msgTextBox.getText(), Integer.parseInt(keyValueTF.getText())));
+                cipherTextBox.setText(Caesar.encrypt(msgTextBox.getText(), Integer.parseInt(keyValueTF.getText())));
             }else if (s.equals("Playfair")){
                 Playfair playfair = new Playfair();
                 playfair.createMatrix(keyValueTF.getText());
@@ -81,7 +81,7 @@ public class Main extends Application {
                 DES des = new DES(keyValueTF.getText());
                 cipherTextBox.setText(des.decrypt(msgTextBox.getText()));
             }else if (s.equals("Caesar")){
-                cipherTextBox.setText(CaesarCipher.decrypt(msgTextBox.getText(), Integer.parseInt(keyValueTF.getText())));
+                cipherTextBox.setText(Caesar.decrypt(msgTextBox.getText(), Integer.parseInt(keyValueTF.getText())));
             }else if (s.equals("Playfair")){
                 Playfair playfair = new Playfair();
                 playfair.createMatrix(keyValueTF.getText());
